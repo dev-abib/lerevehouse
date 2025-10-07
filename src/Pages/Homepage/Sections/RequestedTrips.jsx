@@ -14,21 +14,29 @@ const RequestedTrips = ({ title }) => {
     refetchOnFocus: true,
     refetchOnReconnect: true,
   });
-
+  
   const [sanitizedData, setSanitizedData] = useState([]);
+
+  const getLimitedDescription = (desc, wordLimit = 50) => {
+    if (!desc) return ""; 
+
+    const words = desc.split(" "); 
+    const limitedWords = words.slice(0, wordLimit); 
+    return limitedWords.join(" ") + (words.length > wordLimit ? "..." : ""); 
+  };
 
   useEffect(() => {
     if (!data?.data) return;
 
     const processed = data.data.map((item, idx) => {
-      // console.log(item);
+      console.log(item);
 
       const newData = {
-        id: item?.trip_package?.id,
-        image: item?.trip_package?.trip_package_image,
-        image_alt_txt: item?.trip_package?.image_alt_txt,
-        title: item?.trip_package?.trip_package_title || null,
-        description: item?.trip_package?.trip_detail?.hero_section_description,
+        id: item?.destination_id,
+        image: item?.trip_package_image,
+        image_alt_txt: item?.image_alt_txt,
+        title: item?.trip_package_title || null,
+        description: getLimitedDescription(item?.trip_detail?.description),
       };
 
       if (idx === 0) {

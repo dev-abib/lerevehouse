@@ -1,5 +1,4 @@
 import CommonHeroBanner from "@/components/common/HeroBanner/CommonHeroBanner";
-import bg from "../../assets/images/activities/activities.jfif";
 import ActivitiesSubcategoryLeftDescription from "@/components/ActivitiesSubcategory/ActivitiesSubcategoryLeftDescription";
 import ActivitiesSubcategoryRightDescription from "@/components/ActivitiesSubcategory/ActivitiesSubcategoryRightDescription";
 import ActivitiesSubcategoryTab from "@/components/ActivitiesSubcategory/ActivitiesSubcategoryTab";
@@ -8,6 +7,7 @@ import ActivitiesSubcategoryCard from "@/components/common/Cards/ActivitiesSubca
 import { useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import {
+  useGetAvailableActivitiesTripPackageQuery,
   useGetSingleActivityDetailsQuery,
   useMetaDetailsDataMutation,
 } from "@/Redux/features/api/apiSlice";
@@ -15,16 +15,30 @@ import { InfinitySpin } from "react-loader-spinner";
 import toast from "react-hot-toast";
 import HelmetComponent from "@/components/Helmet/Helmet";
 import { useTranslation } from "react-i18next";
+import DestinationDetailsSlider from "@/components/DestinationDetails/DestinationDetailsSlider";
 
 const ActivitiesSubcategory = () => {
   const location = useLocation();
+  const { queryId } = useParams();
 
   const [metaDetailsData, { isLoading: isMetaLoading, isSuccess, isError }] =
     useMetaDetailsDataMutation();
 
-  const [metaData, setMetaData] = useState(null);
+  const {
+    data: activityDetailsData,
+    error: activityDetailsDataError,
+    isLoading: isActivityLoading,
+  } = useGetAvailableActivitiesTripPackageQuery(
+    { id: queryId },
+    {
+      refetchOnFocus: true,
+      refetchOnReconnect: true,
+    }
+  );
 
-  const { queryId } = useParams();
+  console.log(activityDetailsData?.data, "destinationSuggestionData");
+
+  const [metaData, setMetaData] = useState(null);
 
   const { t } = useTranslation();
 
@@ -152,6 +166,12 @@ const ActivitiesSubcategory = () => {
                 })}
               </div>
             </div>
+          </div>
+          <div className="xl:my-20 mt-5 md:mt-8 lg:mt-8">
+            <DestinationDetailsSlider
+              destinationSuggestions={activityDetailsData?.data}
+              title={heroData?.name}
+            />
           </div>
         </section>
       </div>

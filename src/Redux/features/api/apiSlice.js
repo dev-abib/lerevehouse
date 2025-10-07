@@ -498,6 +498,13 @@ export const apiSlice = createApi({
         method: `GET`,
       }),
     }),
+
+    getAvailableActivitiesTripPackage: builder.query({
+      query: ({id}) => ({
+        url: `/available-trip-package-for-this-activity/${id}`,
+        method: `GET`,
+      }),
+    }),
   }),
 });
 
@@ -568,5 +575,6 @@ export const {
   useGetDestinationTitleQuery,
   useGetTravelStyleTitleQuery,
   useGetActivityTitleQuery,
-  useGetHoneyMoonTitleQuery
+  useGetHoneyMoonTitleQuery,
+  useGetAvailableActivitiesTripPackageQuery
 } = apiSlice;
