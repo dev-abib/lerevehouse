@@ -135,10 +135,7 @@ const LuxuryCard = ({ item }) => {
                     <p>
                       <strong>Guests:</strong> {data.data.max_guests}
                     </p>
-                    <p>
-                      <strong>Price/Night:</strong> {data.data.price_per_night}{" "}
-                      {data.data.price_currency}
-                    </p>
+                    
                     <p>
                       <strong>WiFi:</strong> {data.data.has_wifi ? "Yes" : "No"}
                     </p>

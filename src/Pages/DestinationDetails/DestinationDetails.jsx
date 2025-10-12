@@ -128,6 +128,9 @@ const DestinationDetails = () => {
   const imgBaseurl = import.meta.env.VITE_SERVER_URL;
   const DescreptionData = data?.data?.destination_details;
 
+  console.log(data?.data);
+  
+
   return (
     <HelmetComponent
       title={metaData?.title}
@@ -159,6 +162,7 @@ const DestinationDetails = () => {
         <DestinationDetailsSlider
           destinationSuggestions={destinationSuggestionData?.data}
           title={title}
+          isSlice={true}
         />
 
         {/* why book this tour section */}
