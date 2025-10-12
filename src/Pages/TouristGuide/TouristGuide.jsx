@@ -132,9 +132,9 @@ const TouristGuide = () => {
       title={metaData?.title}
       description={metaData?.description}
     >
-      <section className="md:mt-[128px] mt-28 2xl:py-[96px] container flex flex-col 2xl:gap-y-[153px] gap-y-10">
+      <section className="md:mt-[128px]  mb-10 mt-28 2xl:py-[96px] container flex flex-col 2xl:gap-y-[153px] gap-y-10">
         <div className="flex flex-col 2xl:gap-y-[96px] gap-y-9">
-          <div className="flex flex-col 2xl:gap-y-8 items-center justify-center">
+          <div className="flex flex-col gap-y-6 2xl:gap-y-10 items-center justify-center">
             <div
               dangerouslySetInnerHTML={{ __html: data?.data?.title }}
               className="text-[#1687C7] text-3xl md:text-[50px] space-y-3  2xl:text-[64px] font-interTight font-bold leading-[160%]  "
