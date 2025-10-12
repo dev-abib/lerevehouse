@@ -11,12 +11,20 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const DestinationDetailsSlider = ({ destinationSuggestions, title , isViewAll = true }) => {
-  const { id } = useParams();
-
-  const { queryId } = useParams();
+const DestinationDetailsSlider = ({
+  destinationSuggestions,
+  title,
+  isViewAll = true,
+  isSlice,
+}) => {
+  const { id, queryId } = useParams();
   const [swiperRef, setSwiperRef] = useState(null);
   const { t } = useTranslation();
+
+  // ✅ Only take first 6 items if isSlice is true
+  const displayedSuggestions = isSlice
+    ? destinationSuggestions?.slice(0, 6)
+    : destinationSuggestions;
 
   return (
     <div id="suggestions" className="md:mt-16 mb-0 my-10 xl:yt-20">
@@ -44,7 +52,7 @@ const DestinationDetailsSlider = ({ destinationSuggestions, title , isViewAll = 
           onSwiper={setSwiperRef}
           className="mySwiper"
         >
-          {destinationSuggestions?.map((item, idx) => (
+          {displayedSuggestions?.map((item, idx) => (
             <SwiperSlide key={idx}>
               <TravelListCard item={item} />
             </SwiperSlide>
@@ -67,7 +75,7 @@ const DestinationDetailsSlider = ({ destinationSuggestions, title , isViewAll = 
       </div>
 
       {/* view all tour btn */}
-      <div className="w-full flex items-center justify-center mt-10 mb-10 ">
+      <div className="w-full flex items-center justify-center mt-10 mb-10">
         {isViewAll && (
           <Link
             to={`/tour-lists/${id || queryId}?isdestination=true`}
