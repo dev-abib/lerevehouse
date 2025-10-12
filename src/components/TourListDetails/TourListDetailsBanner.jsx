@@ -18,7 +18,7 @@ const TourListDetailsBanner = ({ herSectionData }) => {
       />
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-40" />
+      <div className="absolute inset-0 bg-black bg-opacity-50" />
 
       {/* Content */}
       <span className="relative z-10 text-white uppercase bg-[#004265] px-3 sm:px-4 py-1 sm:py-[6px] rounded">
@@ -27,31 +27,31 @@ const TourListDetailsBanner = ({ herSectionData }) => {
       <h1 className="relative z-10 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-center xl:text-left font-editorsNoteNormal font-light text-white">
         {herSectionData?.heroSectionSubtittle}
       </h1>
-      <div className="relative z-10 tour-desc-hero text-white max-w-[900px] text-center xl:text-left">
+      <div className="relative z-10  tour-desc-hero text-white max-w-[900px] text-center xl:text-left">
         {parse(herSectionData?.herSectionDescreption || "")}
       </div>
       <div className="relative z-10 flex items-center flex-wrap justify-center gap-5 md:gap-10 lg:gap-14">
         <div className="text-center">
-          <p className="mb-1 font-editorsNoteNormal text-xl lg:text-2xl">
+          <p className="mb-1 font-editorsNoteNormal text-white text-xl lg:text-2xl">
             {herSectionData?.suggestedHolidayLenght}
           </p>
-          <p className="uppercase text-sm sm:text-base">
+          <p className="uppercase text-white text-sm sm:text-base">
             {t("tourBanner.suggestedLength")}
           </p>
         </div>
         <div className="text-center">
-          <p className="mb-1 font-editorsNoteNormal text-xl lg:text-2xl">
+          <p className="mb-1 font-editorsNoteNormal text-white text-xl lg:text-2xl">
             {herSectionData?.bestTimeToGo}
           </p>
-          <p className="uppercase text-sm sm:text-base">
+          <p className="uppercase text-sm text-white sm:text-base">
             {t("tourBanner.bestTime")}
           </p>
         </div>
         <div className="text-center">
-          <p className="mb-1 font-editorsNoteNormal text-xl lg:text-2xl">
+          <p className="mb-1 font-editorsNoteNormal text-xl text-white lg:text-2xl">
             $ {herSectionData?.price}
           </p>
-          <p className="uppercase text-sm sm:text-base">
+          <p className="uppercase text-sm text-white sm:text-base">
             {t("tourBanner.priceFrom")}
           </p>
         </div>

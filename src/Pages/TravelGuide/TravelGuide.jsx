@@ -2,7 +2,6 @@ import CommonHeroBanner from "@/components/common/HeroBanner/CommonHeroBanner";
 import SingleDestinationCard from "@/components/common/Cards/SingleDestinationCard";
 import {
   useGetDestinationOvreviewDetailsQuery,
-  useGetDestinationsHeroSectionDataQuery,
   useGetDestinationTitleQuery,
   useGetTravelMainHeroSectionDataQuery,
   useMetaDetailsDataMutation,

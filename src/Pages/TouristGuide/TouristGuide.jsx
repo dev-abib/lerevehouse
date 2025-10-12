@@ -103,34 +103,7 @@ const TouristGuide = () => {
     }
   }, [error, getspcialistsError]);
 
-  const FeaturedLinks = [
-    {
-      txt: `${t("featuredLinks.viewTheMap")} ${data?.data?.destination?.name} `,
-      redirect: `/map/${id}`,
-    },
-    {
-      txt: `${t("featuredLinks.naturalPark")}`,
-      redirect: `/national-park/${id}`,
-    },
-    {
-      txt: `${t("featuredLinks.editingAndDrinking")} ${
-        data?.data?.destination?.name
-      }, ${t("featuredLinks.discoverOurTrips")} `,
-      redirect: `/eat&-drink/${id}`,
-    },
-    // {
-    //   txt: `${t("featuredLinks.discoverOurTour")} ${
-    //     data?.data?.destination?.name
-    //   } `,
-    //   redirect: `/tour-list-details/${id}`,
-    // },
-    {
-      txt: `${t("featuredLinks.customizeOurTrip")} ${
-        data?.data?.destination?.name
-      }`,
-      redirect: "/tour-mezi",
-    },
-  ];
+
 
   if (
     isLoading ||
@@ -152,7 +125,7 @@ const TouristGuide = () => {
 
   const imgBaseurl = import.meta.env.VITE_SERVER_URL;
 
-  console.log(data?.data);
+  console.log(data?.data?.tourist_guide_maps, " rafi bokcod");
 
   return (
     <HelmetComponent
@@ -177,32 +150,24 @@ const TouristGuide = () => {
                   dangerouslySetInnerHTML={{ __html: data?.data?.description }}
                   className="text-text-gray text-sm md:text-base leading-[180%] font-normal tracking-[1px] mt-3 md:mt-0"
                 ></div>
-                <div className="flex flex-col gap-y-[6px]">
-                  {FeaturedLinks.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className=" flex flex-row gap-x-3 hover:underline ease-in-out duration-300 items-center "
-                      >
-                        <div className="h-[18px] flex items-center cursor-pointer justify-center w-[18px] rounded-full bg-[#1687C7]  ">
-                          <ArrowSignSvg className="bg-red-500" />
-                        </div>
-                        <NavLink
-                          to={item?.redirect}
-                          className=" text-[#000000] cursor-pointer font-interTight text-sm md:text-base font-normal leading-[180%]  "
-                        >
-                          {" "}
-                          {item?.txt}{" "}
-                        </NavLink>
-                      </div>
-                    );
-                  })}
-                </div>
               </div>
+            </div>
+            <div className="flex flex-wrap w-full justify-center gap-3">
+              {data?.data?.tourist_guide_maps.map((item, idx) => (
+                <button
+                  onClick={() => {
+                    window.open(item?.map_url, "_blank");
+                  }}
+                  className="bg-secondary px-6 py-2 sm:px-7 sm:py-3 font-interTight text-white font-semibold transition-all duration-300 hover:bg-white border border-secondary hover:text-secondary text-sm sm:text-base"
+                  key={idx}
+                >
+                  {item?.name}
+                </button>
+              ))}
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-4">
-            {tourPlacesData?.data?.map((item, index) => { 
+            {tourPlacesData?.data?.map((item, index) => {
               return (
                 <div
                   key={index}
@@ -237,7 +202,7 @@ const TouristGuide = () => {
 
         <div className="flex flex-col 2xl:gap-y-[96px] items-center">
           <div className="flex flex-col gap-y-6 items-center ">
-            <div className="flex flex-col items-center ">
+            <div className="flex flex-col gap-y-20 items-center ">
               <div
                 dangerouslySetInnerHTML={{
                   __html: getSpecaillistData?.data[0]?.title,
@@ -261,33 +226,6 @@ const TouristGuide = () => {
                 ></div>
               </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-y-6 mt-10 2xl:mt-0 mb-10 md:mb-10 2xl:mb-0">
-            {/* <div className="flex flex-col items-center">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: canadaData?.data[0]?.title,
-              }}
-              className="text-[#000000] font-fontSpring text-[30px] xl:text-[40px] 2xl:text-[56px] font-light 2xl:leading-[160%]"
-            ></div>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: canadaData?.data[0]?.short_description,
-              }}
-              className="md:max-w-[1001px] w-full leading-[160%] text-base mt-4 2xl:mt-0 md:text-xl font-interTight text-[#000] text-center"
-            ></div>
-          </div> */}
-            {/* <div className="flex flex-col lg:flex-row gap-6">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: canadaData?.data[0]?.description,
-              }}
-              className="text-[#787878] font-interTight flex flex-col gap-y-2  text-base 2xl:text-xl font-normal 2xl:leading-[180%] leading-[160%] tracking-[1px]"
-            ></div>
-          </div> */}
-            {/* <div className="w-full h-[345px] flex flex-col items-center justify-center">
-            <TravelDetailsSlider data={imagesData} />
-          </div> */}
           </div>
         </div>
       </section>
