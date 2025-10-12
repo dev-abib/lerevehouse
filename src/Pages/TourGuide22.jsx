@@ -59,7 +59,7 @@ const TourGuide22 = () => {
     <section className="container">
       {/* Tour Gallery */}
       <div className="2xl:mt-44 mt-32 mb-10">
-        <figure className="h-[250px] sm:h-[300px] lg:h-auto">
+        <figure className="h-[250px] sm:h-[300px] lg:h-[650px]">
           <img
             src={`${imgBaseUrl}/${data?.data?.trip_guide_images[0].image}`}
             alt="g1"
