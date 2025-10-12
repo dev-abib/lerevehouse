@@ -132,7 +132,7 @@ const TravelActivitiesPage = () => {
         altTxt={data?.data?.image_alt_txt}
       />
       <TripAttraction data={activityDetails?.data[0]} />
-      <BrowseThings title={activityTitle.data[1].title} />
+      <BrowseThings title={activityTitle?.data[1].title} />
       {/* <ActivitiesCanDo /> */}
       <div className="2xl:pt-20">
         <TravelCta
