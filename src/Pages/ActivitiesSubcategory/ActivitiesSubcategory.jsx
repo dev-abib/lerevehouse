@@ -171,6 +171,7 @@ const ActivitiesSubcategory = () => {
             <DestinationDetailsSlider
               destinationSuggestions={activityDetailsData?.data}
               title={heroData?.name}
+              isViewAll={false}
             />
           </div>
         </section>

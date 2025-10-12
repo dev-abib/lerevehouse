@@ -11,8 +11,10 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const DestinationDetailsSlider = ({ destinationSuggestions, title }) => {
+const DestinationDetailsSlider = ({ destinationSuggestions, title , isViewAll = true }) => {
   const { id } = useParams();
+
+  const { queryId } = useParams();
   const [swiperRef, setSwiperRef] = useState(null);
   const { t } = useTranslation();
 
@@ -65,14 +67,16 @@ const DestinationDetailsSlider = ({ destinationSuggestions, title }) => {
       </div>
 
       {/* view all tour btn */}
-      <div className="w-full flex items-center justify-center mt-10">
-        <Link
-          to={`/tour-lists/${id}?isdestination=true`}
-          className="block px-8 xl:px-12 2xl:px-24 py-3 text-sm lg:text-base bg-primary text-white font-interTight font-medium border border-primary hover:bg-transparent hover:text-primary transition-all duration-300"
-        >
-          {t("destinationDetailsSlider.viewAll")} {title}{" "}
-          {t("destinationDetailsSlider.tour")}
-        </Link>
+      <div className="w-full flex items-center justify-center mt-10 mb-10 ">
+        {isViewAll && (
+          <Link
+            to={`/tour-lists/${id || queryId}?isdestination=true`}
+            className="block px-8 xl:px-12 2xl:px-24 py-3 text-sm lg:text-base bg-primary text-white font-interTight font-medium border border-primary hover:bg-transparent hover:text-primary transition-all duration-300"
+          >
+            {t("destinationDetailsSlider.viewAll")} {title}{" "}
+            {t("destinationDetailsSlider.tour")}
+          </Link>
+        )}
       </div>
     </div>
   );
