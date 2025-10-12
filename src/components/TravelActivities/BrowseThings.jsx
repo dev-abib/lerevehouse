@@ -60,7 +60,7 @@ const BrowseThings = ({ title }) => {
               : data?.data
             )?.map(item => (
               <TravelExploreCard
-                link="/activities/subcategory/"
+                link="/activities-details/"
                 key={item.id}
                 item={item}
                 travelMode="activity"

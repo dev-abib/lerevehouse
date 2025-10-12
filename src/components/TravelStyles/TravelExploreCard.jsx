@@ -22,7 +22,7 @@ const TravelExploreCard = ({ item, travelMode }) => {
           ? `/travel-styles-details/${item?.id}`
           : travelMode === "travel_details" || travelMode === "honey_moon"
           ? `/tour-list-details/${item?.id}`
-          : `/activities/subcategory/${item.id}`
+          : `/activities-details/${item.id}`
       );
     }
   };
