@@ -166,53 +166,6 @@ const RecomendedAttractionModal = ({ setOpen, modalData }) => {
               </div>
               <div className=" py-6">
                 <div className="flex flex-col gap-y-6">
-                  <div className="flex md:flex-row justify-between w-full">
-                    <div className="w-1/3 text-[#004265] text-sm md:text-lg font-medium leading-[120%] font-interTight flex flex-col gap-y-2 items-center">
-                      <span
-                        onClick={() => {
-                          setactiveTab("Details");
-                        }}
-                        className="cursor-pointer"
-                      >
-                        Details
-                      </span>
-                      <div
-                        className={`w-full bg-[#004265] h-[3px] rounded-[3px] ${
-                          activeTab === "Details" ? "block" : "hidden"
-                        }`}
-                      ></div>
-                    </div>
-                    <div className="w-1/3 text-[#004265] text-sm md:text-lg font-medium leading-[120%] font-interTight flex flex-col gap-y-2 items-center">
-                      <span
-                        onClick={() => {
-                          setactiveTab("Location");
-                        }}
-                        className="cursor-pointer"
-                      >
-                        Location
-                      </span>
-                      <div
-                        className={`w-full bg-[#004265] h-[3px] rounded-[3px] ${
-                          activeTab === "Location" ? "block" : "hidden"
-                        }`}
-                      ></div>
-                    </div>
-                    <div className="w-1/3 text-[#004265] text-sm md:text-lg font-medium leading-[120%] font-interTight flex flex-col gap-y-2 items-center">
-                      <span
-                        onClick={() => {
-                          setactiveTab("Rates");
-                        }}
-                        className="cursor-pointer"
-                      >
-                        Rates
-                      </span>
-                      <div
-                        className={`w-full bg-[#004265] h-[3px] rounded-[3px] ${
-                          activeTab === "Rates" ? "block" : "hidden"
-                        }`}
-                      ></div>
-                    </div>
-                  </div>
                   <div>
                     {activeTab === "Details" && (
                       <div
@@ -222,7 +175,7 @@ const RecomendedAttractionModal = ({ setOpen, modalData }) => {
                       />
                     )}
                     {activeTab === "Location" && (
-                      <div className="w-full md:mt-10">
+                      <div className="w-full md:mt-5">
                         <GoogleMap
                           mapContainerStyle={containerStyle}
                           center={waypoints[0]}
