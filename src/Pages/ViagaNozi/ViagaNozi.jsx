@@ -116,6 +116,8 @@ const ViagaNozi = () => {
         data={data?.data}
         isHoneyMoon={true}
         title={honeyMoonData?.data[0]?.title}
+        isTravelStyleRedirect={true}
+        
       />
     </HelmetComponent>
   );

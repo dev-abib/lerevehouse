@@ -1,32 +1,47 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
+
 
 const TravelExploreCard = ({ item, travelMode }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const imgBaseurl = import.meta.env.VITE_SERVER_URL;
+   const location = useLocation(); 
+   const pathname = location.pathname;
+  console.log(travelMode, "this is the travel mode");
 
   const imageSrc = `${imgBaseurl}/${item?.image || item?.travel_style?.image}`;
   const title = item?.name || item?.travel_style?.name;
   const description = item?.description || item?.travel_style?.description;
 
   const handleNavigation = () => {
-    if (
-      title?.toLowerCase() === "honeymoon" ||
-      title?.toLowerCase() === "viaggi noze"
+    if (title && title.toLowerCase() === "honeymoon") {
+      if (pathname === "/viaggi-noze") { 
+        navigate(`/tour-list-details/${item?.id}`);
+      } else {
+        navigate("/viaggi-noze");
+      } 
+    } else if (
+      title &&
+      title.toLowerCase() === "viaggi noze" &&
+      travelMode !== "honey_moon"
     ) {
       navigate("/viaggi-noze");
     } else {
-      navigate(
-        travelMode === "styles"
-          ? `/travel-styles-details/${item?.id}`
-          : travelMode === "travel_details" || travelMode === "honey_moon"
-          ? `/tour-list-details/${item?.id}`
-          : `/activity-details/${item.id}`
-      );
+      // Safe navigation based on `travelMode`
+      if (travelMode === "styles") {
+        navigate(`/travel-styles-details/${item?.id}`);
+      } else if (
+        travelMode === "travel_details" ||
+        travelMode === "honey_moon"
+      ) {
+        navigate(`/tour-list-details/${item?.id}`);
+      } else {
+        navigate(`/activity-details/${item.id}`);
+      }
     }
   };
-
 
   return (
     <div className="TravelExploreCard relative rounded-[15px] overflow-hidden flex flex-col items-center justify-center z-[1] h-[240px] lg:h-[400px] 2xl:h-[520px] group">

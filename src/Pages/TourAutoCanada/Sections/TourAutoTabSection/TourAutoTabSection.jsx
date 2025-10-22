@@ -37,7 +37,7 @@ const TourAutoTabSection = ({ data }) => {
       </div>
 
       <div className="flex flex-col gap-y-5 w-full relative">
-        {data?.map((item, index) => {
+        {data?.map((item, index) => {          
           return (
             <div
               key={index}

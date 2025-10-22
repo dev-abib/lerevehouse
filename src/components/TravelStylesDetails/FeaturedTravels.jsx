@@ -8,7 +8,12 @@ import imageSix from "../../assets/images/explore-travel6.png";
 import TravelExploreCard from "../TravelStyles/TravelExploreCard";
 import { useTranslation } from "react-i18next";
 
-const FeaturedTravels = ({ isHoneyMoon, data, title }) => {
+const FeaturedTravels = ({
+  isHoneyMoon,
+  data,
+  title,
+  isTravelStyleRedirect,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -23,9 +28,10 @@ const FeaturedTravels = ({ isHoneyMoon, data, title }) => {
           {isHoneyMoon
             ? data?.map(item => (
                 <TravelExploreCard
-                  travelMode={isHoneyMoon ? "honey_moon" : "travel_details"}
+                  travelMode={isHoneyMoon  ? "honey_moon" : "travel_details"}
                   key={item.id}
                   item={item}
+                  isTravelStyleRedirect={isTravelStyleRedirect}
                 />
               ))
             : data

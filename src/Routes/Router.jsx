@@ -10,6 +10,7 @@ import Destination from "@/Pages/Destination/Destination";
 import DestinationDetails from "@/Pages/DestinationDetails/DestinationDetails";
 import DynamicPage from "@/Pages/DynamicPage/DynamicPage";
 import EatAndDrink from "@/Pages/EatAndDrink/EatAndDrink";
+import ErrorPage from "@/Pages/ErrroPage/ErrorPage";
 import Homepage from "@/Pages/Homepage/Homepage";
 import OntarionQuebec from "@/Pages/OntarioQuebec/OntarionQuebec";
 import Prairies from "@/Pages/Praises/Prairies";
@@ -29,16 +30,26 @@ import TravelStylePage from "@/Pages/TravelStyle/TravelStylePage";
 import TravelStyleDetailsPage from "@/Pages/TravelStyleDetails/TravelStyleDetailsPage";
 import ViagaNozi from "@/Pages/ViagaNozi/ViagaNozi";
 import SearchPage from "@/SearchPage/SearchPage";
+import { ErrorBoundary } from "react-error-boundary";
 import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    element: (
+      <ErrorBoundary FallbackComponent={ErrorPage}>
+        <MainLayout />
+      </ErrorBoundary>
+    ),
     children: [
       {
         index: true,
         element: <Homepage />,
+      },
+      {
+        path: "*",
+        element: <ErrorPage />,
       },
       {
         path: "/destination",
