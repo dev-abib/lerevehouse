@@ -104,6 +104,9 @@ const TouristListDetails = () => {
     bestTimeToGo = `${startMonth} - ${endMonth}`;
   }
 
+  console.log(data?.data , ' this is all data ');
+  
+
   const heroSectionData = {
     heroSectionTittle: data?.data?.trip_detail?.hero_section_title,
     heroSectionSubtittle: data?.data?.trip_detail?.hero_section_sub_title,
@@ -113,6 +116,7 @@ const TouristListDetails = () => {
     suggestedHolidayLenght: data?.data.duration,
     heroImage: data?.data?.trip_package_image,
     img_alt_txt: data?.data?.image_alt_txt,
+    img_gallery:data?.data?.image_galleries
   };
 
   const itenariesData = {
