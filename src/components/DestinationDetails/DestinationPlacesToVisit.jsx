@@ -26,11 +26,11 @@ const DestinationPlacesToVisit = ({ placesToVisitInfo }) => {
         </h4>
 
         {/* Map Image Section */}
-        <div className="w-full sm:w-[650px] relative mb-6">
+        <div className="w-full  relative mb-6">
           <img
             src={`${imgBaseurl}/${placesToVisitInfo?.destination_details?.map}`}
             alt="Map not found"
-            className="object-cover w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] xl:h-[814px] max-h-[814px] rounded-lg"
+            className=" object-contain w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] xl:h-[814px] max-h-[814px] rounded-lg"
           />
         </div>
 

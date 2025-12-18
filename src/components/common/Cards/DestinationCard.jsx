@@ -5,18 +5,40 @@ import { DurationSvg, LinkSvg } from "../SvgContainer/SvgContainer";
 import map from "../../../assets/images/card-map.png";
 import { useTranslation } from "react-i18next";
 
-const DestinationCard = ({ item }) => {
+const DestinationCard = ({ item, destinationSlug: destinationSlugProp }) => {
   const [showExplore, setShowExplore] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   const imgBaseUrl = import.meta.env.VITE_SERVER_URL;
 
+  // 🔹 slug del tour (da trip-packages)
+  const tripSlug =
+    item?.slug ||
+    item?.trip_slug ||
+    item?.tripSlug ||
+    null;
+
+  // 🔹 slug della destinazione: CI FIDIAMO della prop (arriva dal tab attivo)
+  const destinationSlug =
+    destinationSlugProp ||
+    item?.destinationSlug ||
+    item?.destination_slug ||
+    item?.destination?.slug ||
+    null;
+
+  // 🔗 Costruisco l'URL:
+  // 1) se ho destinationSlug + tripSlug → SEO URL /destinazione-alaska/tour-classic-alaska-8
+  // 2) altrimenti fallback vecchio /tour-list-details/:id
+  const hasSeoUrl = destinationSlug && tripSlug;
+  const linkTo = hasSeoUrl
+    ? `/${destinationSlug}/${tripSlug}`
+    : `/tour-list-details/${item?.id}`;
 
   return (
     <div
       onClick={() => {
-        navigate(`/tour-list-details/${item?.id}`);
+        navigate(linkTo);
       }}
       onMouseEnter={() => setShowExplore(true)}
       onMouseLeave={() => setShowExplore(false)}
@@ -42,7 +64,7 @@ const DestinationCard = ({ item }) => {
 
       {/* explore button */}
       <Link
-        to={`/tour-list-details/${item?.id}`}
+        to={linkTo}
         className={`bg-black/20 backdrop-blur-sm px-3 py-1 absolute top-5 right-5 flex items-center gap-1 text-sm transition-all duration-300 ${
           showExplore ? "opacity-100" : "opacity-0"
         }`}

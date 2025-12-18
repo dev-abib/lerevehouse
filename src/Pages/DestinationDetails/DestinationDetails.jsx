@@ -5,15 +5,15 @@ import DestinationDetailsSlider from "@/components/DestinationDetails/Destinatio
 import WhyBookSection from "../Homepage/Sections/WhyBookSection";
 import DestinationPlacesToVisit from "@/components/DestinationDetails/DestinationPlacesToVisit";
 import DestinationLuxurySection from "@/components/DestinationDetails/DestinationLuxurySection";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-
 
 import {
   useGetAccomadationsDataQuery,
   useGetDestinationDetailsPackageQuery,
   useGetDestinationDetailsQuery,
   useMetaDetailsDataMutation,
+  useGetAllMenuSubMenuDataQuery,
 } from "@/Redux/features/api/apiSlice";
 import toast from "react-hot-toast";
 import { InfinitySpin } from "react-loader-spinner";
@@ -21,12 +21,40 @@ import { useTranslation } from "react-i18next";
 import HelmetComponent from "@/components/Helmet/Helmet";
 
 const DestinationDetails = () => {
-  const { id } = useParams();
-    const { t } = useTranslation();
+  const { id, slug } = useParams();
+  const { t } = useTranslation();
 
-  const [metaDetailsData, { isLoading:isMetaloading, isSuccess, isError }] =
-    useMetaDetailsDataMutation();
+  // menu
+  const {
+    data: menuData,
+    isLoading: isMenuLoading,
+    error: menuError,
+  } = useGetAllMenuSubMenuDataQuery(undefined, {
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
 
+  // ricavo l'id (identifier)
+  let identifier = id || null;
+
+  if (!identifier && slug && menuData?.data) {
+    const destinationCategory = menuData.data.find(
+      cat =>
+        cat.redirectLink === "/destination" ||
+        cat.category?.toLowerCase() === "destinazione"
+    );
+
+    const match = destinationCategory?.subCatgoryArr?.find(
+      item => item.slug === slug
+    );
+
+    if (match?.id) {
+      identifier = String(match.id);
+    }
+  }
+
+  // meta
+  const [metaDetailsData] = useMetaDetailsDataMutation();
   const [metaData, setMetaData] = useState(null);
 
   useEffect(() => {
@@ -36,59 +64,83 @@ const DestinationDetails = () => {
       .catch(err => console.error("Meta save error:", err));
   }, [metaDetailsData]);
 
-
-
-  const { data, error, isLoading } = useGetDestinationDetailsQuery(id, {
+  // query dati
+  const { data, error, isLoading } = useGetDestinationDetailsQuery(identifier, {
     refetchOnFocus: true,
     refetchOnReconnect: true,
+    skip: !identifier,
   });
 
   const {
     data: accomandationData,
     error: accomadationError,
     isLoading: isAccomadtion,
-  } = useGetAccomadationsDataQuery(id, {
+  } = useGetAccomadationsDataQuery(identifier, {
     refetchOnFocus: true,
     refetchOnReconnect: true,
+    skip: !identifier,
   });
 
   const {
     data: destinationSuggestionData,
     error: destinationSuggestionError,
     isLoading: isdestinationLoading,
-  } = useGetDestinationDetailsPackageQuery(id, {
+  } = useGetDestinationDetailsPackageQuery(identifier, {
     refetchOnFocus: true,
     refetchOnReconnect: true,
+    skip: !identifier,
   });
 
-  const handleDestinationMap = address => {
-    const location = `https://www.google.com/maps?q=${address}`;
-    window.open(location, "_blank");
-  };
+	const title = data?.data?.name || "";
 
-  const title = data?.data?.name || "";
-  const sectionTabs = t("touristGuide.sectionTabs", {
-    returnObjects: true,
-    title,
-  })?.map((label, index) => ({
-    label,
-    link: [
-      `${title}-holiday`,
-      "suggestions",
-      "places-to-visit",
-      "where-to-stay"
-    ][index]
-  }));
+	// MEMO: costruisco l'array solo quando cambia title (o la lingua t)
+	const sectionTabs = useMemo(() => {
+	  if (!title) return [];
+	  return t("touristGuide.sectionTabs", {
+		returnObjects: true,
+		title,
+	  })?.map((label, index) => ({
+		label,
+		link: [
+		  `${title}-holiday`,
+		  "suggestions",
+		  "places-to-visit",
+		  "where-to-stay",
+		][index],
+	  })) || [];
+	}, [t, title]);
 
-  const [activeTab, setActiveTab] = useState(null);
+	const [activeTab, setActiveTab] = useState(null);
 
-  useEffect(() => {
-    if (title) {
-      setActiveTab(sectionTabs[0]);
+	useEffect(() => {
+	  if (title && sectionTabs.length) {
+		setActiveTab(sectionTabs[0]);
+	  }
+	}, [title, sectionTabs]);
+
+
+  // ⚠️ TUTTI GLI HOOK SONO SOPRA
+  // 👇 Da qui in giù solo return condizionali
+
+  // se ancora non abbiamo trovato l'identifier
+  if (!identifier) {
+    if (isMenuLoading) {
+      return (
+        <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center z-50 bg-white">
+          <InfinitySpin
+            visible={true}
+            width="200"
+            color="#004265"
+            ariaLabel="infinity-spin-loading"
+          />
+        </div>
+      );
     }
-  }, [title]);
 
-  // Loading state
+    return <div>Destinazione non trovata</div>;
+  }
+
+  // loading dati principali
   if (isLoading || isdestinationLoading) {
     return (
       <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center z-50 bg-white">
@@ -102,7 +154,7 @@ const DestinationDetails = () => {
     );
   }
 
-  // Error state
+  // errori
   if (error) {
     const errorMessage =
       error.data?.message || error.error || error.status || error.message;
@@ -122,14 +174,11 @@ const DestinationDetails = () => {
     }
   }
 
-  // Wait for title and tab setup
+  // se per qualche motivo titolo/tab non sono ancora pronti
   if (!title || !activeTab) return null;
 
   const imgBaseurl = import.meta.env.VITE_SERVER_URL;
   const DescreptionData = data?.data?.destination_details;
-
-  console.log(data?.data);
-  
 
   return (
     <HelmetComponent
@@ -137,41 +186,35 @@ const DestinationDetails = () => {
       description={metaData?.description}
       className="relative "
     >
-      {/* hero */}
       <CommonHeroBannerVideo
         heroBg={`${imgBaseurl}/${data?.data?.destination_details?.video}`}
         title={title.toLowerCase()}
         capitalize={true}
       />
 
-      {/*  Section Tabs */}
       <DestinationDetailsTabs
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         sectionTabs={sectionTabs}
       />
 
-      <section className="container  mx-auto my-10 xl:my-20    ">
-        {/* description container*/}
+      <section className="container mx-auto my-10 xl:my-20">
         <DestinationDetailsDescription
           data={DescreptionData}
           id={`${title}-holiday`}
         />
 
-        {/* Suggestions container */}
         <DestinationDetailsSlider
           destinationSuggestions={destinationSuggestionData?.data}
           title={title}
+		  destinationSlug={slug}
           isSlice={true}
         />
 
-        {/* why book this tour section */}
         <WhyBookSection />
 
-        {/* places to visit section */}
         <DestinationPlacesToVisit placesToVisitInfo={data?.data} />
 
-        {/* Luxury Section */}
         <DestinationLuxurySection luxuryPlacesInfo={accomandationData?.data} />
       </section>
     </HelmetComponent>

@@ -8,7 +8,6 @@ import {
   NextSlideSvg,
   PrevSlideSvg,
 } from "../common/SvgContainer/SvgContainer";
-import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const DestinationDetailsSlider = ({
@@ -16,15 +15,26 @@ const DestinationDetailsSlider = ({
   title,
   isViewAll = true,
   isSlice,
+  destinationSlug,
 }) => {
-  const { id, queryId } = useParams();
   const [swiperRef, setSwiperRef] = useState(null);
+  const [showAll, setShowAll] = useState(false); // solo "mostra tutto", niente hide
   const { t } = useTranslation();
 
-  // ✅ Only take first 6 items if isSlice is true
+  if (!destinationSuggestions || destinationSuggestions.length === 0) {
+    return null;
+  }
+
+  // Tour mostrati nello slider (es. primi 6)
   const displayedSuggestions = isSlice
-    ? destinationSuggestions?.slice(0, 6)
+    ? destinationSuggestions.slice(0, 6)
     : destinationSuggestions;
+
+  // Tour rimanenti (quelli che compariranno sotto quando clicchi "View all")
+  const remainingSuggestions =
+    isSlice && destinationSuggestions.length > displayedSuggestions.length
+      ? destinationSuggestions.slice(displayedSuggestions.length)
+      : [];
 
   return (
     <div id="suggestions" className="md:mt-16 mb-0 my-10 xl:yt-20">
@@ -47,45 +57,63 @@ const DestinationDetailsSlider = ({
             768: { slidesPerView: 2, spaceBetween: 15 },
             1280: { slidesPerView: 3, spaceBetween: 24 },
           }}
-          loop={true}
+          loop={displayedSuggestions.length > 3}
           spaceBetween={20}
           onSwiper={setSwiperRef}
           className="mySwiper"
         >
-          {displayedSuggestions?.map((item, idx) => (
+          {displayedSuggestions.map((item, idx) => (
             <SwiperSlide key={idx}>
-              <TravelListCard item={item} />
+              <TravelListCard item={item} destinationSlug={destinationSlug} />
             </SwiperSlide>
           ))}
         </Swiper>
 
         {/* slider navigation */}
-        <button
-          onClick={() => swiperRef?.slidePrev()}
-          className="size-10 bg-[#E6ECF0] shadow-md rounded-full flex items-center justify-center absolute top-1/2 -left-4 lg:-left-8 z-10"
-        >
-          <PrevSlideSvg />
-        </button>
-        <button
-          onClick={() => swiperRef?.slideNext()}
-          className="size-10 bg-[#E6ECF0] shadow-md rounded-full flex items-center justify-center absolute top-1/2 -right-4 lg:-right-8 z-10"
-        >
-          <NextSlideSvg />
-        </button>
+        {displayedSuggestions.length > 3 && (
+          <>
+            <button
+              onClick={() => swiperRef?.slidePrev()}
+              className="size-10 bg-[#E6ECF0] shadow-md rounded-full flex items-center justify-center absolute top-1/2 -left-4 lg:-left-8 z-10"
+            >
+              <PrevSlideSvg />
+            </button>
+            <button
+              onClick={() => swiperRef?.slideNext()}
+              className="size-10 bg-[#E6ECF0] shadow-md rounded-full flex items-center justify-center absolute top-1/2 -right-4 lg:-right-8 z-10"
+            >
+              <NextSlideSvg />
+            </button>
+          </>
+        )}
       </div>
 
       {/* view all tour btn */}
       <div className="w-full flex items-center justify-center mt-10 mb-10">
-        {isViewAll && (
-          <Link
-            to={`/tour-lists/${id || queryId}?isdestination=true`}
+        {isViewAll && !showAll && remainingSuggestions.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setShowAll(true)}
             className="block px-8 xl:px-12 2xl:px-24 py-3 text-sm lg:text-base bg-primary text-white font-interTight font-medium border border-primary hover:bg-transparent hover:text-primary transition-all duration-300"
           >
             {t("destinationDetailsSlider.viewAll")} {title}{" "}
             {t("destinationDetailsSlider.tour")}
-          </Link>
+          </button>
         )}
       </div>
+
+      {/* lista dei tour aggiuntivi (solo quelli NON nello slider) */}
+      {showAll && remainingSuggestions.length > 0 && (
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 3xl:grid-cols-3 gap-4 xl:gap-6">
+          {remainingSuggestions.map((item, idx) => (
+            <TravelListCard
+              key={item?.id || idx}
+              item={item}
+              destinationSlug={destinationSlug}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

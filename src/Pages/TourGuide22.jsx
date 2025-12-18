@@ -14,12 +14,18 @@ import { useParams } from "react-router-dom";
 import { useTourGuideDataQuery } from "@/Redux/features/api/apiSlice";
 import { InfinitySpin } from "react-loader-spinner";
 import toast from "react-hot-toast";
+import { useSearchParams } from "react-router-dom";
 
 const TourGuide22 = () => {
-  const { slug } = useParams();
-  const sanitizedSlug = Number(slug.replace(":", ""));
+ const [searchParams] = useSearchParams();
+  const idParam = searchParams.get("id");
+  const id = Number(idParam);
 
-  const { data, error, isLoading } = useTourGuideDataQuery(sanitizedSlug, {
+  if (!id || Number.isNaN(id)) {
+    return <ErrorPage />;   // o un fallback decente
+  }
+
+  const { data, error, isLoading } = useTourGuideDataQuery(id, {
     refetchOnFocus: true,
     refetchOnReconnect: true,
   });

@@ -3,25 +3,56 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import { EffectCoverflow, Pagination } from "swiper/modules";
+
 import ExtraOrdinaryHomepageSlider from "@/components/common/Slider/ExtraOrdinaryHomepageSlider";
-import {
-  NextSlideSvg,
-  PrevSlideSvg,
-} from "@/components/common/SvgContainer/SvgContainer";
-import { useState } from "react";
+import { NextSlideSvg, PrevSlideSvg } from "@/components/common/SvgContainer/SvgContainer";
+
+import { useState, useMemo } from "react";
 import TransparentButton from "@/components/common/Buttons/TransparentButton";
-import { useGetDestinationOvreviewDetailsQuery } from "@/Redux/features/api/apiSlice";
+
+import {
+  useGetDestinationOvreviewDetailsQuery,
+  useGetAllMenuSubMenuDataQuery,
+} from "@/Redux/features/api/apiSlice";
+
 import { useTranslation } from "react-i18next";
 
 const HomepageExtraOrdinarySection = ({ title }) => {
-  const { t } = useTranslation();
-  const { data, error, isLoading } = useGetDestinationOvreviewDetailsQuery(
-    undefined,
-    {
-      refetchOnFocus: true,
-      refetchOnReconnect: true,
-    }
-  );
+  const { t, i18n } = useTranslation();
+
+  // lingua corrente → it / en
+  const currentLang = i18n.language?.startsWith("it") ? "it" : "en";
+
+  // overview destinazioni
+  const { data, error, isLoading } = useGetDestinationOvreviewDetailsQuery(undefined, {
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
+
+  // menu localizzato → serve per ricavare lo slug
+  const { data: menuData } = useGetAllMenuSubMenuDataQuery(currentLang, {
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
+
+  // mappa slug destinazioni → { id: "slug" }
+  const destinationSlugMap = useMemo(() => {
+    if (!menuData?.data) return {};
+
+    const destinationCategory = menuData.data.find(cat => {
+      const c = cat.category?.toLowerCase();
+      return c === "destinazione" || c === "destination";
+    });
+
+    if (!destinationCategory) return {};
+
+    const map = {};
+    destinationCategory.subCatgoryArr.forEach(sub => {
+      map[sub.id] = sub.slug;
+    });
+
+    return map;
+  }, [menuData]);
 
   const [swiperRef, setSwiperRef] = useState(null);
 
@@ -30,7 +61,7 @@ const HomepageExtraOrdinarySection = ({ title }) => {
       {/* Title */}
       <div className="py-5 flex items-center justify-center xl:py-10">
         <h2
-          className="text-center max-w-[650px] text-primary   font-medium text-3xl xl:text-4xl 2xl:text-5xl leading-[128%] lg:leading-[1.1]"
+          className="text-center max-w-[650px] text-primary font-medium text-3xl xl:text-4xl 2xl:text-5xl leading-[128%] lg:leading-[1.1]"
           dangerouslySetInnerHTML={{ __html: title }}
         />
       </div>
@@ -54,11 +85,27 @@ const HomepageExtraOrdinarySection = ({ title }) => {
           modules={[EffectCoverflow, Pagination]}
           className="mySwiper"
         >
-          {data?.data?.map(destination => (
-            <SwiperSlide key={destination?.name}>
-              <ExtraOrdinaryHomepageSlider destination={destination} />
-            </SwiperSlide>
-          ))}
+          {data?.data?.map(destination => {
+            // ATTENZIONE: usa il campo corretto per l'id della destinazione
+            const destId =
+              destination?.destination_id ||
+              destination?.id ||
+              null;
+
+            const slug =
+              (destId && destinationSlugMap[destId]) ||
+              destination?.slug ||
+              null;
+
+            return (
+              <SwiperSlide key={destination?.name}>
+                <ExtraOrdinaryHomepageSlider
+                  destination={destination}
+                  slug={slug}
+                />
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
 
         {/* Navigation */}

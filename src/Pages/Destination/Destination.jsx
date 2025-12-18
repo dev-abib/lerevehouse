@@ -114,7 +114,7 @@ const Destination = () => {
       {/* Hero section */}
       <CommonHeroBanner
         bg={`${imgBaseurl}/${heroSectionData?.data[0]?.background_image}`}
-        title={normalTxt}
+        title={heroSectionData?.data[0]?.title}
         subTittle={heroSectionData?.data[0]?.sub_title}
       />
 
@@ -140,6 +140,7 @@ const Destination = () => {
                       title={destination?.name.trim()}
                       height={getCardHeight(rowIndex, cardIndex)}
                       id={destination?.id}
+                      slug={destination?.slug}
                       subTittle={destination?.subtitle}
                     />
                   );

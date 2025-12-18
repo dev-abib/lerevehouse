@@ -9,17 +9,23 @@ const SingleDestinationCard = ({
   isTravelGuide = false,
   altTxt,
   subTittle,
+  slug,
 }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    const path = isTravelGuide
-      ? `/tourist-guide/${id}`
-      : `/destination-details/${id}`;
-    navigate(path);
+    if (isTravelGuide && id && slug) {
+      // GUIDA TURISTICA → es: /tourist-guide/1/alaska
+      navigate(`/tourist-guide/${id}/${slug}`);
+    }  else if (slug) {
+      // fallback di sicurezza, se mai servisse
+      navigate(`/${slug}`);
+    }
+	  else if (id) {
+      // uso "vecchio" comportamento per le altre parti del sito
+      navigate(`/destination-details/${id}`);
+    } 
   };
-
-  console.log(subTittle);
 
   return (
     <div

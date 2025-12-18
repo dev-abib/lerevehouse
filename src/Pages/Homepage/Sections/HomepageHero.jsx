@@ -7,6 +7,7 @@ import "swiper/css/pagination";
 import { Autoplay, Pagination } from "swiper/modules";
 import HeroSlide from "@/components/Homepage/HeroSlide";
 import { useGetHomePageHeroSectionDataQuery } from "@/Redux/features/api/apiSlice";
+import { useCallback } from "react";
 
 const HomepageHero = () => {
   const { data, error, isLoading } = useGetHomePageHeroSectionDataQuery(
@@ -17,7 +18,22 @@ const HomepageHero = () => {
     }
   );
 
-  
+const stripHtml = useCallback((html) => {
+  if (typeof html !== "string") return "";
+
+  return html
+    // rimuovi i tag html
+    .replace(/<\/?[^>]+(>|$)/g, " ")
+    // sostituisci entity &nbsp; con spazio normale
+    .replace(/&nbsp;/gi, " ")
+    // sostituisci anche il carattere NBSP vero e proprio, se presente
+    .replace(/\u00A0/g, " ")
+    // compatta spazi multipli in uno solo
+    .replace(/\s+/g, " ")
+    // togli spazi iniziali/finali
+    .trim();
+}, []);
+
   return (
     <div className="-mt-[56px] 2xl:mt-0 4xl:-mt-[56px] relative">
       {/* Custom Pagination Container */}
@@ -40,7 +56,7 @@ const HomepageHero = () => {
             <HeroSlide
               vidoeUrl={item?.file_url}
               title={item?.title}
-              subTitle={item?.short_description}
+              subTitle={stripHtml(item?.short_description)}
               btnTxt={item?.button_text}
               isExternalBtnLink={item?.is_link_available}
               buttonLink={item?.button_link}

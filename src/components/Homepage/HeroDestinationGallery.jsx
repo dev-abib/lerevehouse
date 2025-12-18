@@ -2,11 +2,10 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import DestinationCard from "../common/Cards/DestinationCard";
 
-const HeroDestinationGallery = ({ tabContents }) => {
+const HeroDestinationGallery = ({ tabContents, destinationSlug }) => {
   const [isShowMore, setIsShowMore] = useState(false);
   const { t } = useTranslation();
 
-  // Guard against undefined or not an array
   if (!Array.isArray(tabContents)) return null;
 
   const displayedItems = isShowMore ? tabContents : tabContents.slice(0, 6);
@@ -15,7 +14,11 @@ const HeroDestinationGallery = ({ tabContents }) => {
     <div className="flex flex-col gap-y-5 w-full items-center">
       <div className="grid w-full grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 xl:gap-8 mt-10">
         {displayedItems.map((item) => (
-          <DestinationCard key={item?.destinationTitle} item={item} />
+          <DestinationCard
+            key={item?.id}
+            item={item}
+            destinationSlug={destinationSlug}
+          />
         ))}
       </div>
 

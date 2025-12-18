@@ -1,16 +1,23 @@
 /* eslint-disable react/prop-types */
 
-import { Link } from "react-router-dom";
-import bg from "@/assets/images/bg.png";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const RequestedTripCard = ({ item, idx }) => {
   const imgBaseurl = import.meta.env.VITE_SERVER_URL;
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
+  // se ho destinationSlug + tripSlug → /destinazione-alaska/tour-classic-alaska-8
+  const hasSeoUrl = item?.destinationSlug && item?.tripSlug;
+
+  const linkTo = hasSeoUrl
+    ? `/${item.destinationSlug}/${item.tripSlug}`
+    : `/tour-list-details/${item?.id}`; // fallback
 
   return (
     <div
+      onClick={() => navigate(linkTo)}
       className={`relative overflow-hidden h-[350px] xl:h-[450px] 2xl:h-[750px] flex ${
         item?.type === "horizontal" ? "items-center justify-end" : "items-end"
       } ${
@@ -19,18 +26,14 @@ const RequestedTripCard = ({ item, idx }) => {
           : idx === 2
           ? "col-span-6 lg:col-span-4"
           : "col-span-6"
-      }`}
+      } cursor-pointer`}
     >
-      {/* Main background image */}
       <img
         src={`${imgBaseurl}/${item.image}`}
         alt={item?.image_alt_txt || `${item?.title} main image`}
         className="absolute inset-0 w-full h-full object-cover"
       />
 
-     
-
-      {/* Content container */}
       <div
         style={{ backgroundColor: `${item?.bgColor}` }}
         className={`font-interTight text-white relative z-10 flex items-center justify-center ${
@@ -45,9 +48,11 @@ const RequestedTripCard = ({ item, idx }) => {
             dangerouslySetInnerHTML={{ __html: item?.description }}
             className="text-sm xl:text-base"
           />
+
           <Link
-            to={`/tour-list-details/${item?.id}`}
+            to={linkTo}
             className="underline block pt-1 lg:pt-4"
+            onClick={e => e.stopPropagation()}
           >
             {t("discoverMore")}
           </Link>

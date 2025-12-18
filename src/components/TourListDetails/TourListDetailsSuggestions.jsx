@@ -7,7 +7,8 @@ import TravelListCard from "../common/Cards/TravelListCard";
 import { useTranslation } from "react-i18next";
 // import { Pagination } from 'swiper/modules';
 
-const TourListDetailsSuggestions = ({ data }) => {
+
+const TourListDetailsSuggestions = ({ data , destinationSlug  }) => {
   const { t } = useTranslation();
   return (
     <div className="my-8 sm:my-12 xl:my-20  ">
@@ -41,7 +42,7 @@ const TourListDetailsSuggestions = ({ data }) => {
         >
           {data?.map((item, idx) => (
             <SwiperSlide key={idx}>
-              <TravelListCard item={item} />
+              <TravelListCard item={item} destinationSlug={destinationSlug} />
             </SwiperSlide>
           ))}
         </Swiper>

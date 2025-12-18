@@ -26,6 +26,11 @@ const BrowseThings = ({ title }) => {
 
   const location = useLocation();
 
+  // 👉 QUI È IL POSTO GIUSTO
+  const isActivitiesPage =
+    location.pathname === "/activities" ||
+    location.pathname === "/attivita";
+
   if (isLoading) {
     return (
       <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center z-50 bg-white">
@@ -53,19 +58,24 @@ const BrowseThings = ({ title }) => {
         <div className="2x:mb-[60px] mb-7 md:mb-10">
           <h3 className="title--xxl text-center">{title}</h3>
         </div>
+
         <div>
           <div className="grid lg:grid-cols-3 gap-5">
-            {(location.pathname === "/activities"
-              ? allActivityData?.data
-              : data?.data
-            )?.map(item => (
-              <TravelExploreCard
-                link="/activities-details/"
-                key={item.id}
-                item={item}
-                travelMode="activity"
-              />
-            ))}
+            {(isActivitiesPage ? allActivityData?.data : data?.data)?.map(
+              item => (
+                <TravelExploreCard
+                  link={
+                    isActivitiesPage
+                      ? "/activities-details/"
+                      : "/attivita-details/"
+                  }
+					link="/" 
+                  key={item.id}
+                  item={item}
+                  travelMode="activity"
+                />
+              ),
+            )}
           </div>
         </div>
       </div>

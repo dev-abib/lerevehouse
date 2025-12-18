@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import CommonHeroBanner from "@/components/common/HeroBanner/CommonHeroBanner";
 import TourAutoTabSection from "../TourAutoCanada/Sections/TourAutoTabSection/TourAutoTabSection";
 import TestModal from "@/components/Modals/TestModal";
@@ -6,10 +6,13 @@ import { Modal } from "@/components/Modals/Modal";
 import {
   useGetTransportationPageDetailsDataQuery,
   useMetaDetailsDataMutation,
+  useGetAllMenuSubMenuDataQuery, // ⬅️ AGGIUNTO
 } from "@/Redux/features/api/apiSlice";
 import { useParams } from "react-router-dom";
 import HelmetComponent from "@/components/Helmet/Helmet";
 import { useTranslation } from "react-i18next";
+import { InfinitySpin } from "react-loader-spinner"; // ⬅️ AGGIUNTO
+import ErrorPage from "@/Pages/ErrroPage/ErrorPage";  // ⬅️ AGGIUNTO
 
 const TourWithCar = () => {
   const { t } = useTranslation();
@@ -17,9 +20,69 @@ const TourWithCar = () => {
   const [metaData, setMetaData] = useState(null);
   const [open, setOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
-  const { id } = useParams();
 
-  const { data } = useGetTransportationPageDetailsDataQuery(id, {
+  // 👇 ARRIVI QUI SIA DA:
+  // - /road-tour-details/:id
+  // - /road-tour-details/:id/:slug
+  // - /:slug  (es. /self-drive-tour-in-canada -> SlugResolver -> TourWithCar)
+  const { id: routeId, slug } = useParams();
+
+  // ---------- MENU: per risolvere slug → id (caso /self-drive-tour-in-canada) ----------
+  const {
+    data: menuData,
+    isLoading: isMenuLoading,
+    error: menuError,
+  } = useGetAllMenuSubMenuDataQuery(undefined, {
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
+
+  // id numerico? (vecchie route) es. "1"
+  const isNumericId = routeId && /^\d+$/.test(routeId);
+
+  // identifier viene calcolato in useMemo per NON violare le regole degli hook
+  const identifier = useMemo(() => {
+    // 1) se ho id numerico dalla route → uso quello (vecchie URL)
+    if (isNumericId) {
+      return routeId;
+    }
+
+    // 2) se arrivo da /self-drive-tour-in-canada → devo mappare slug → id
+    if (slug && menuData?.data) {
+      const transportationCategory = menuData.data.find(
+        cat =>
+          cat.redirectLink === "/tour-mezi" ||
+          (cat.category || "").toLowerCase().includes("transportation")
+      );
+
+      const match = transportationCategory?.subCatgoryArr?.find(
+        item => item.slug === slug
+      );
+
+      if (match?.id) {
+        return String(match.id);
+      }
+    }
+
+    // 3) non trovato
+    return null;
+  }, [isNumericId, routeId, slug, menuData]);
+
+  // ---------- META ----------
+  useEffect(() => {
+    metaDetailsData("transportation_details")
+      .unwrap()
+      .then(res => setMetaData(res?.data))
+      .catch(console.error);
+  }, [metaDetailsData]);
+
+  // ---------- QUERY DETTAGLIO ROAD TOUR ----------
+  const {
+    data,
+    error,
+    isLoading,
+  } = useGetTransportationPageDetailsDataQuery(identifier || "default", {
+    skip: !identifier, // ⬅️ NON chiama l'API finché non abbiamo un id valido
     refetchOnFocus: true,
     refetchOnReconnect: true,
   });
@@ -35,18 +98,52 @@ const TourWithCar = () => {
   ];
 
   useEffect(() => {
-    metaDetailsData("transportation_details")
-      .unwrap()
-      .then(res => setMetaData(res?.data))
-      .catch(console.error);
-  }, [metaDetailsData]);
-
-  useEffect(() => {
     if (data?.data?.transportation_mediums?.[0]?.id) {
       setSelectedVehicle(data.data.transportation_mediums[0].id);
     }
   }, [data]);
 
+  // ---------- RETURN CONDIZIONALI (DOPO TUTTI GLI HOOK) ----------
+
+  // Se ancora non abbiamo capito che tour mostrare
+  if (!identifier) {
+    // se stiamo ancora caricando il menu, mostra loader
+    if (isMenuLoading) {
+      return (
+        <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center z-50 bg-white">
+          <InfinitySpin
+            visible={true}
+            width="200"
+            color="#004265"
+            ariaLabel="infinity-spin-loading"
+          />
+        </div>
+      );
+    }
+    // menu finito ma nessun match → 404
+    return <ErrorPage />;
+  }
+
+  // loading dati road tour
+  if (isLoading) {
+    return (
+      <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center z-50 bg-white">
+        <InfinitySpin
+          visible={true}
+          width="200"
+          color="#004265"
+          ariaLabel="infinity-spin-loading"
+        />
+      </div>
+    );
+  }
+
+  // se per qualche motivo l'API non ritorna data
+  if (!data?.data) {
+    return <ErrorPage />;
+  }
+
+  // ---------- UI (la tua, invariata) ----------
   return (
     <HelmetComponent
       title={metaData?.title}

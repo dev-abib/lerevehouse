@@ -168,11 +168,13 @@ const TouristGuide = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-4">
             {tourPlacesData?.data?.map((item, index) => {
+				   const url = `/tour-guides/${item.id}/${item.slug}`; // <- URL corretta
               return (
                 <div
                   key={index}
                   onClick={() => {
-                    navigate(`/tour-guides?id=${item?.id}`);
+                    //navigate(`/tour-guides?id=${item?.id}`);
+						  navigate(`/tour-guides/${item.id}/${item.slug}`);
                   }}
                   className="2xl:h-[404px] h-[220px] 2xl:w-[312px] w-full relative cursor-pointer overflow-hidden group"
                 >
@@ -188,7 +190,7 @@ const TouristGuide = () => {
                   {/* Title */}
                   <div className="absolute inset-0 flex items-center justify-center px-2 text-center">
                     <NavLink
-                      to={item.title}
+                      to={url}
                       className="text-white md:max-w-[238px] font-interTight md:text-2xl text-lg font-bold leading-[160%] z-10"
                     >
                       {item?.title}

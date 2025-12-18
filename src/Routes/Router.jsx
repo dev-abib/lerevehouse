@@ -32,66 +32,134 @@ import ViagaNozi from "@/Pages/ViagaNozi/ViagaNozi";
 import SearchPage from "@/SearchPage/SearchPage";
 import { ErrorBoundary } from "react-error-boundary";
 import { createBrowserRouter } from "react-router-dom";
+import SlugResolver from "@/Pages/SlugResolver/SlugResolver";
+import DoubleSlugResolver from "@/Pages/DoubleSlugResolver/DoubleSlugResolver";
+import TourGuidesRedirect from "@/Pages/TourGuidesRedirect/TourGuidesRedirect";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />,
     element: (
       <ErrorBoundary FallbackComponent={ErrorPage}>
         <MainLayout />
       </ErrorBoundary>
     ),
     children: [
+      // HOME
       {
         index: true,
         element: <Homepage />,
       },
+		
+		
+		
+
+      // ------------- STATIC PAGES / LISTE -------------
+      { path: "/destination", element: <Destination /> },
+		{ path: "/destinazioni", element: <Destination /> },
+		
+      { path: "/travel-style", element: <TravelStylePage /> },
+		{ path: "/stili-di-viaggio", element: <TravelStylePage /> }, // IT
+		
+      { path: "/activities", element: <TravelActivitiesPage /> },
+		{ path: "/attivita", element: <TravelActivitiesPage /> },    // IT
+		
+      { path: "/travel-activities", element: <TravelActivitiesPage /> },
+		
+		
+      { path: "/viaggi-nozze", element: <ViagaNozi /> },
+		// { path: "/honeymoon", element: <ViagaNozi /> },
+		// { path: "/luna-di-miele", element: <ViagaNozi /> },
+
+      { path: "/contact", element: <Contact /> },
+		{ path: "/contatti", element: <Contact /> },           // IT
+      { path: "/tour-mezi", element: <TourCanada /> },
+		
+		{
+  path: "/guida-turistica/:id/:destinationSlug/:slug",
+  element: <SingleCanadaTour />,
+},
+	{
+  path: "/tour-guides/:id/:destinationSlug/:slug",
+  element: <SingleCanadaTour />,
+},
+		
+	  { path: "/tour-guides/:id/:slug", element: <TourGuidesRedirect /> },
+	  { path: "/tour-guides/:id", element: <TourGuidesRedirect /> },
+      { path: "/tour-guides", element: <TourGuidesRedirect /> },
+	//  { path: "/tour-guides", element: <TourGuide22 /> },
+      { path: "/atlantics-provinces", element: <AtlanticProvinces /> },
+      { path: "/ontario-quebec", element: <OntarionQuebec /> },
+      { path: "/Prairies", element: <Prairies /> },
+      { path: "/tour-auto", element: <TourAutoCanada /> },
+      { path: "/canada-holiday", element: <CanadaHoliday /> },
+      { path: "/map", element: <TestMap /> },
+      { path: "/canada-map", element: <CanadaMap /> },
+      { path: "/pages/privacy-policy", element: <DynamicPage /> },
+      { path: "/pages/terms-and-conditions", element: <DynamicPage /> },
+      { path: "/search", element: <SearchPage /> },
+
+      // ------------- DESTINATION DETAILS -------------
       {
-        path: "*",
-        element: <ErrorPage />,
-      },
-      {
-        path: "/destination",
-        element: <Destination />,
+        path: "/destination-details/:id/:slug",
+        element: <DestinationDetails />,
       },
       {
         path: "/destination-details/:id",
         element: <DestinationDetails />,
       },
+
+      // ------------- TRAVEL STYLE DETAILS -------------
       {
-        path: "/travel-style",
-        element: <TravelStylePage />,
+        path: "/travel-styles-details/:id/:slug",
+        element: <TravelStyleDetailsPage />,
       },
       {
         path: "/travel-styles-details/:id",
         element: <TravelStyleDetailsPage />,
       },
+
+      // ------------- TOURIST GUIDE -------------
+		// GUIDA TURISTICA
+		{ path: "/tourist-guide", element: <TravelGuide /> }, // EN (lista)
+		{ path: "/guida-turistica", element: <TravelGuide /> }, // IT
+
       {
-        path: "/tourist-guide",
-        element: <TravelGuide />,
-        // element: <TouristGuide />,
+        path: "/tourist-guide/:id/:slug",
+        element: <TouristGuide />,
+      },
+		      {
+        path: "/guida-turistica/:id/:slug",
+        element: <TouristGuide />,
       },
       {
         path: "/tourist-guide/:id",
         element: <TouristGuide />,
       },
+		  {
+        path: "/guida-turistica/:id",
+        element: <TouristGuide />,
+      },
+
+      // ------------- ACTIVITIES -------------
       {
         path: "/activity-details/:queryId",
         element: <ActivitiesSubcategory />,
       },
       {
-        path: "/activities-details/:id",
+        path: "/activity-details/:id/:slug",
         element: <ActivitiesDetails />,
       },
       {
-        path: "/activities",
-        element: <TravelActivitiesPage />,
+        path: "/activity-details/:id",
+        element: <ActivitiesDetails />,
       },
       {
-        path: "/contact",
-        element: <Contact />,
+        path: "/activities-details/:id", // alias vecchia rotta
+        element: <ActivitiesDetails />,
       },
+
+      // ------------- TOUR LISTS / DETTAGLI -------------
       {
         path: "/tour-lists/:title",
         element: <TourList />,
@@ -101,19 +169,7 @@ const router = createBrowserRouter([
         element: <TouristListDetails />,
       },
 
-      {
-        path: "/travel-styles-details/:slug",
-        element: <TravelStyleDetailsPage />,
-      },
-
-      {
-        path: "/travel-activities",
-        element: <TravelActivitiesPage />,
-      },
-      {
-        path: "/map",
-        element: <TestMap />,
-      },
+      // ------------- ALTRE DETTAGLIO PAGINE -------------
       {
         path: "/national-park/:id",
         element: <TourGuide />,
@@ -126,67 +182,45 @@ const router = createBrowserRouter([
         path: "/tour-guide-deatils/:slug",
         element: <TourGuide22 />,
       },
+
+      // ROAD TOUR
       {
-        path: "/tour-mezi",
-        element: <TourCanada />,
-      },
-      {
-        path: "/viaggi-noze",
-        element: <ViagaNozi />,
-      },
-      {
-        path: "/customize/tour-canda",
-        element: <CustomizeTripCanada />,
-      },
-      {
-        path: "/tour-guides",
-        element: <SingleCanadaTour />,
-      },
-      {
-        path: "/atlantics-provinces",
-        element: <AtlanticProvinces />,
-      },
-      {
-        path: "/ontario-quebec",
-        element: <OntarionQuebec />,
-      },
-      {
-        path: "/Prairies",
-        element: <Prairies />,
-      },
-      {
-        path: "/tour-auto",
-        element: <TourAutoCanada />,
+        path: "/road-tour-details/:id/:slug",
+        element: <TourWithCar />,
       },
       {
         path: "/road-tour-details/:id",
         element: <TourWithCar />,
       },
-      {
-        path: "/canada-holiday",
-        element: <CanadaHoliday />,
-      },
+
+      // MAP SINGLE
       {
         path: "/map/:id",
         element: <CanadaMap />,
       },
+		      // SEO: /<travelStyleSlug>/<tripSlug>
+	/*	{
+  path: "/:destinationSlug/:tripSlug",
+  element: <TouristListDetails />,
+},*/
+	{
+	  path: "/:slug1/:slug2",
+	  element: <DoubleSlugResolver />, // nuovo componente
+	},
+
+      // ------------- SLUG GENERICO (DESTINATION / TRAVEL STYLE) -------------
       {
-        path: "/canada-map",
-        element: <CanadaMap />,
+        path: "/:slug",
+        element: <SlugResolver />,
       },
+
+      // ------------- 404 FALLBACK (DEVE ESSERE L'ULTIMA) -------------
       {
-        path: "/pages/privacy-policy",
-        element: <DynamicPage />,
-      },
-      {
-        path: "/pages/terms-and-conditions",
-        element: <DynamicPage />,
-      },
-      {
-        path: "/search",
-        element: <SearchPage />,
+        path: "*",
+        element: <ErrorPage />,
       },
     ],
   },
 ]);
+
 export default router;

@@ -145,6 +145,7 @@ const TravelGuide = () => {
                       height={getCardHeight(rowIndex, cardIndex)}
                       id={destination?.id}
                       isTravelGuide={true}
+						 slug={destination?.slug}      
                       subTittle={destination?.subtitle}
                       altTxt={destination?.image_alt_txt}
                     />

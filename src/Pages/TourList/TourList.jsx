@@ -6,31 +6,90 @@ import toast from "react-hot-toast";
 import {
   useGetDestinationDetailsPackageQuery,
   useGetTripPackageDetailsQuery,
+  useGetAllMenuSubMenuDataQuery,
 } from "@/Redux/features/api/apiSlice";
 import { useTranslation } from "react-i18next";
 
 const TourList = () => {
-  const { title } = useParams();
+  const { title } = useParams(); // es: "Canada West", "Alaska"
   const [searchParams] = useSearchParams();
   const isDestination = searchParams.get("isdestination") === "true";
+  const { t } = useTranslation();
 
-  const { data, error, isLoading } = useGetTripPackageDetailsQuery(title, {
+  const decodedTitle = decodeURIComponent(title || "");
+
+  // 1️⃣ Prendo il MENU per risalire all'id dalla label
+  const {
+    data: menuData,
+    isLoading: isMenuLoading,
+    error: menuError,
+  } = useGetAllMenuSubMenuDataQuery(undefined, {
     refetchOnFocus: true,
     refetchOnReconnect: true,
   });
 
-  const { t } = useTranslation();
+  // 2️⃣ Ricavo l'ID a partire da title e dal tipo (destinazione / travel style)
+  let identifier = null;
+
+  if (menuData?.data && decodedTitle) {
+    if (isDestination) {
+      // categoria destination / destinazione
+      const destinationCategory = menuData.data.find(
+        cat =>
+          cat.redirectLink === "/destination" ||
+          cat.category?.toLowerCase() === "destination" ||
+          cat.category?.toLowerCase() === "destinazione"
+      );
+
+      const match = destinationCategory?.subCatgoryArr?.find(
+        item => item.name === decodedTitle
+      );
+
+      if (match?.id) identifier = String(match.id);
+    } else {
+      // categoria travel style / stile di viaggio
+      const travelStyleCategory = menuData.data.find(
+        cat =>
+          cat.redirectLink === "/travel-style" ||
+          cat.category?.toLowerCase() === "travel style" ||
+          cat.category?.toLowerCase() === "stile di viaggio"
+      );
+
+      const match = travelStyleCategory?.subCatgoryArr?.find(
+        item => item.name === decodedTitle
+      );
+
+      if (match?.id) identifier = String(match.id);
+    }
+  }
+
+  // 3️⃣ Query dati, SOLO quando abbiamo l'id
+  const {
+    data,
+    error,
+    isLoading: isTripListLoading,
+  } = useGetTripPackageDetailsQuery(identifier, {
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+    skip: !identifier || isDestination, // questa la usiamo SOLO per travel style
+  });
 
   const {
     data: destinationSuggestionData,
     error: destinationSuggestionError,
-    isLoading: isdestinationLoading,
-  } = useGetDestinationDetailsPackageQuery(title, {
+    isLoading: isDestinationListLoading,
+  } = useGetDestinationDetailsPackageQuery(identifier, {
     refetchOnFocus: true,
     refetchOnReconnect: true,
+    skip: !identifier || !isDestination, // questa SOLO per destinazioni
   });
 
-  if (isLoading || isdestinationLoading) {
+  // 4️⃣ LOADING: mentre risolviamo id o carichiamo dati
+  if (
+    isMenuLoading ||
+    isTripListLoading ||
+    isDestinationListLoading
+  ) {
     return (
       <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center z-50 bg-white">
         <InfinitySpin
@@ -43,12 +102,20 @@ const TourList = () => {
     );
   }
 
+  // 5️⃣ Se non c'è identifier dopo aver caricato il menu → non trovata
+  if (!identifier) {
+    return (
+      <section className="my-10 xl:my-20 container mx-auto">
+        <p className="text-center text-gray-500">{t("noTourFound")}</p>
+      </section>
+    );
+  }
+
+  // 6️⃣ Error handling
   if (error) {
     const errorMessage =
       error.data?.message || error.error || error.status || error.message;
-    if (errorMessage) {
-      toast.error(errorMessage);
-    }
+    if (errorMessage) toast.error(errorMessage);
   }
 
   if (destinationSuggestionError) {
@@ -57,22 +124,43 @@ const TourList = () => {
       destinationSuggestionError.error ||
       destinationSuggestionError.status ||
       destinationSuggestionError.message;
-    if (errorMessage) {
-      toast.error(errorMessage);
-    }
+    if (errorMessage) toast.error(errorMessage);
+  }
+
+  if (menuError) {
+    const errorMessage =
+      menuError.data?.message ||
+      menuError.error ||
+      menuError.status ||
+      menuError.message;
+    if (errorMessage) toast.error(errorMessage);
   }
 
   const imgBaseurl = import.meta.env.VITE_SERVER_URL;
 
+  const tourData = isDestination
+    ? destinationSuggestionData?.data
+    : data?.data;
+
+  if (!tourData || tourData.length === 0) {
+    return (
+      <section className="my-10 xl:my-20 container mx-auto">
+        <p className="text-center text-gray-500">{t("noTourFound")}</p>
+      </section>
+    );
+  }
+
   const bannerImage = isDestination
-    ? `${imgBaseurl}/${destinationSuggestionData?.data?.[0]?.trip_package_image}`
-    : `${imgBaseurl}/${data?.data?.[0]?.travel_style?.image}`;
+    ? `${imgBaseurl}/${tourData[0]?.trip_package_image}`
+    : `${imgBaseurl}/${tourData[0]?.travel_style?.image}`;
 
   const italicText = isDestination
-    ? destinationSuggestionData?.data?.[0]?.trip_package_title
-    : data?.data?.[0]?.travel_style?.name;
+    ? tourData[0]?.trip_package_title
+    : tourData[0]?.travel_style?.name;
 
-  const tourData = isDestination ? destinationSuggestionData?.data : data?.data;
+  const headingName = isDestination
+    ? tourData[0]?.trip_package_title
+    : tourData[0]?.travel_style?.name;
 
   return (
     <div>
@@ -88,12 +176,7 @@ const TourList = () => {
         <div>
           <h2 className="text-center text-3xl xl:text-4xl font-editorsNoteNormal text-primary">
             {t("allToursFor")}
-            <span>
-              {" "}
-              {isDestination
-                ? destinationSuggestionData?.data?.[0]?.trip_package_title
-                : data?.data?.[0]?.travel_style?.name}
-            </span>
+            <span> {headingName}</span>
           </h2>
         </div>
 
