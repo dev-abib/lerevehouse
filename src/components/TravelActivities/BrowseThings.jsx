@@ -28,8 +28,7 @@ const BrowseThings = ({ title }) => {
 
   // 👉 QUI È IL POSTO GIUSTO
   const isActivitiesPage =
-    location.pathname === "/activities" ||
-    location.pathname === "/attivita";
+    location.pathname === "/activities" || location.pathname === "/attivita";
 
   if (isLoading) {
     return (
@@ -69,12 +68,11 @@ const BrowseThings = ({ title }) => {
                       ? "/activities-details/"
                       : "/attivita-details/"
                   }
-					link="/" 
                   key={item.id}
                   item={item}
                   travelMode="activity"
                 />
-              ),
+              )
             )}
           </div>
         </div>
