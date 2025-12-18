@@ -107,6 +107,7 @@ const TravelStylePage = () => {
         uppercaseItalic={true}
         uppercaseTitle={true}
         title={normalTxt}
+        subTittle={''}
         italic={styledTxt}
         altTxt={data?.data?.image_alt_txt}
       />

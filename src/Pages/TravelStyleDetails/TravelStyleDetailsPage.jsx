@@ -141,7 +141,7 @@ const TravelStyleDetailsPage = () => {
     return <div>Travel style non trovato</div>;
   }
 
-  console.log(`${imgBaseurl}/${travelStyle?.image}`);
+  console.log(travelStyle);
 
   return (
     <HelmetComponent
@@ -152,11 +152,9 @@ const TravelStyleDetailsPage = () => {
         bg={`${imgBaseurl}/${travelStyle?.image}`}
         title={travelStyle?.title}
         altTxt={travelStyle?.image_alt_txt}
+        subTittle={travelStyle?.sub_title}
       />
-      <ExploreJourney
-        data={travelStyle}
-        btnTxt={t("viewAllTravelStyle")}
-      />
+      <ExploreJourney data={travelStyle} btnTxt={t("viewAllTravelStyle")} />
       <FeaturedTravels data={data?.data} />
     </HelmetComponent>
   );

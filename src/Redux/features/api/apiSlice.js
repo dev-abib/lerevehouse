@@ -500,8 +500,15 @@ export const apiSlice = createApi({
     }),
 
     getAvailableActivitiesTripPackage: builder.query({
-      query: ({id}) => ({
+      query: ({ id }) => ({
         url: `/available-trip-package-for-this-activity/${id}`,
+        method: `GET`,
+      }),
+    }),
+
+    getPhoneNumbers: builder.query({
+      query: () => ({
+        url: `/cms/hero-contacts`,
         method: `GET`,
       }),
     }),
@@ -576,5 +583,6 @@ export const {
   useGetTravelStyleTitleQuery,
   useGetActivityTitleQuery,
   useGetHoneyMoonTitleQuery,
-  useGetAvailableActivitiesTripPackageQuery
+  useGetAvailableActivitiesTripPackageQuery,
+  useGetPhoneNumbersQuery
 } = apiSlice;

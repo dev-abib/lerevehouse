@@ -81,6 +81,8 @@ const ItenaryIdeaDetails = ({ itenariesData }) => {
   const closeAll = () => {
     setOpenItems([]);
   };
+  
+  
 
   return (
     <>
@@ -242,25 +244,22 @@ const ItenaryIdeaDetails = ({ itenariesData }) => {
                         })}
                       </div>
                     </div>
-					  
-				{faq?.accommodations && faq.accommodations.length > 0 && (
-				  <div className="flex flex-col gap-y-2 mt-6">
 
-					{/* 🔵 TITOLO */}
-					<span className="flex flex-row items-center gap-x-2 text-primary font-medium text-base lg:text-lg">
-					  {t("itinerary.whereToStay", "Where to stay")}
-					</span>
+                    {faq?.accommodations && faq.accommodations.length > 0 && (
+                      <div className="flex flex-col gap-y-2 mt-6">
+                        {/* 🔵 TITOLO */}
+                        <span className="flex flex-row items-center gap-x-2 text-primary font-medium text-base lg:text-lg">
+                          {t("itinerary.whereToStay", "Where to stay")}
+                        </span>
 
-					{/* 🔵 LISTA ACCOMMODATIONS */}
-					<div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
-					  {faq.accommodations.map(acc => (
-						<LuxuryCard key={acc.id} item={acc} />
-					  ))}
-					</div>
-				  </div>
-				)}
-
-					  
+                        🔵 LISTA ACCOMMODATIONS
+                        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
+                          {faq.accommodations.map(acc => (
+                            <LuxuryCard key={acc.id} item={acc} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </AccordionContent>
               </AccordionItem>
