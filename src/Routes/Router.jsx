@@ -50,44 +50,40 @@ const router = createBrowserRouter([
         index: true,
         element: <Homepage />,
       },
-		
-		
-		
 
       // ------------- STATIC PAGES / LISTE -------------
       { path: "/destination", element: <Destination /> },
-		{ path: "/destinazioni", element: <Destination /> },
-		
+      { path: "/destinazioni", element: <Destination /> },
+
       { path: "/travel-style", element: <TravelStylePage /> },
-		{ path: "/stili-di-viaggio", element: <TravelStylePage /> }, // IT
-		
+      { path: "/stili-di-viaggio", element: <TravelStylePage /> }, // IT
+
       { path: "/activities", element: <TravelActivitiesPage /> },
-		{ path: "/attivita", element: <TravelActivitiesPage /> },    // IT
-		
+      { path: "/attivita", element: <TravelActivitiesPage /> }, // IT
+
       { path: "/travel-activities", element: <TravelActivitiesPage /> },
-		
-		
+
       { path: "/viaggi-nozze", element: <ViagaNozi /> },
-		// { path: "/honeymoon", element: <ViagaNozi /> },
-		// { path: "/luna-di-miele", element: <ViagaNozi /> },
+      // { path: "/honeymoon", element: <ViagaNozi /> },
+      // { path: "/luna-di-miele", element: <ViagaNozi /> },
 
       { path: "/contact", element: <Contact /> },
-		{ path: "/contatti", element: <Contact /> },           // IT
+      { path: "/contatti", element: <Contact /> }, // IT
       { path: "/tour-mezi", element: <TourCanada /> },
-		
-		{
-  path: "/guida-turistica/:id/:destinationSlug/:slug",
-  element: <SingleCanadaTour />,
-},
-	{
-  path: "/tour-guides/:id/:destinationSlug/:slug",
-  element: <SingleCanadaTour />,
-},
-		
-	  { path: "/tour-guides/:id/:slug", element: <TourGuidesRedirect /> },
-	  { path: "/tour-guides/:id", element: <TourGuidesRedirect /> },
+
+      {
+        path: "/guida-turistica/:id/:destinationSlug/:slug",
+        element: <SingleCanadaTour />,
+      },
+      {
+        path: "/tour-guides/:id/:destinationSlug/:slug",
+        element: <SingleCanadaTour />,
+      },
+
+      { path: "/tour-guides/:id/:slug", element: <TourGuidesRedirect /> },
+      { path: "/tour-guides/:id", element: <TourGuidesRedirect /> },
       { path: "/tour-guides", element: <TourGuidesRedirect /> },
-	//  { path: "/tour-guides", element: <TourGuide22 /> },
+      //  { path: "/tour-guides", element: <TourGuide22 /> },
       { path: "/atlantics-provinces", element: <AtlanticProvinces /> },
       { path: "/ontario-quebec", element: <OntarionQuebec /> },
       { path: "/Prairies", element: <Prairies /> },
@@ -120,15 +116,15 @@ const router = createBrowserRouter([
       },
 
       // ------------- TOURIST GUIDE -------------
-		// GUIDA TURISTICA
-		{ path: "/tourist-guide", element: <TravelGuide /> }, // EN (lista)
-		{ path: "/guida-turistica", element: <TravelGuide /> }, // IT
+      // GUIDA TURISTICA
+      { path: "/tourist-guide", element: <TravelGuide /> }, // EN (lista)
+      { path: "/guida-turistica", element: <TravelGuide /> }, // IT
 
       {
         path: "/tourist-guide/:id/:slug",
         element: <TouristGuide />,
       },
-		      {
+      {
         path: "/guida-turistica/:id/:slug",
         element: <TouristGuide />,
       },
@@ -136,7 +132,7 @@ const router = createBrowserRouter([
         path: "/tourist-guide/:id",
         element: <TouristGuide />,
       },
-		  {
+      {
         path: "/guida-turistica/:id",
         element: <TouristGuide />,
       },
@@ -198,15 +194,15 @@ const router = createBrowserRouter([
         path: "/map/:id",
         element: <CanadaMap />,
       },
-		      // SEO: /<travelStyleSlug>/<tripSlug>
-	/*	{
+      // SEO: /<travelStyleSlug>/<tripSlug>
+      /*	{
   path: "/:destinationSlug/:tripSlug",
   element: <TouristListDetails />,
 },*/
-	{
-	  path: "/:slug1/:slug2",
-	  element: <DoubleSlugResolver />, // nuovo componente
-	},
+      {
+        path: "/:slug1/:slug2",
+        element: <DoubleSlugResolver />, // nuovo componente
+      },
 
       // ------------- SLUG GENERICO (DESTINATION / TRAVEL STYLE) -------------
       {

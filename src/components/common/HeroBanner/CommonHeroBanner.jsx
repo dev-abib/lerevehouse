@@ -35,7 +35,7 @@ const CommonHeroBanner = ({
               className="text-[24px] font-medium leading-[150%] tracking-[1px]"
             ></div>
           ) : (
-            <span className="text-[24px] font-medium leading-[150%] tracking-[1px]">
+            <span className="text-[24px] font-editorsNoteNormal font-medium leading-[150%] tracking-[1px]">
               {subSubTittle}
             </span>
           ))}
@@ -66,7 +66,7 @@ const CommonHeroBanner = ({
               className="text-center text-base xl:text-2xl font-medium md:leading-[150%]"
             ></div>
           ) : (
-            <span className="text-center text-base xl:text-2xl font-medium md:leading-[150%]">
+            <span className="text-center font-editorsNoteNormal  text-base xl:text-2xl font-medium md:leading-[150%]">
               {subTittle}
             </span>
           ))}

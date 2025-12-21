@@ -61,7 +61,7 @@ const HomepageExtraOrdinarySection = ({ title }) => {
       {/* Title */}
       <div className="py-5 flex items-center justify-center xl:py-10">
         <h2
-          className="text-center max-w-[650px] text-primary font-medium text-3xl xl:text-4xl 2xl:text-5xl leading-[128%] lg:leading-[1.1]"
+          className="text-center font-editorsNoteNormal max-w-[650px] text-primary font-medium text-3xl xl:text-4xl 2xl:text-5xl leading-[128%] lg:leading-[1.1]"
           dangerouslySetInnerHTML={{ __html: title }}
         />
       </div>
@@ -88,9 +88,7 @@ const HomepageExtraOrdinarySection = ({ title }) => {
           {data?.data?.map(destination => {
             // ATTENZIONE: usa il campo corretto per l'id della destinazione
             const destId =
-              destination?.destination_id ||
-              destination?.id ||
-              null;
+              destination?.destination_id || destination?.id || null;
 
             const slug =
               (destId && destinationSlugMap[destId]) ||
